@@ -1,4 +1,8 @@
-﻿import os
+﻿# pylint: disable = line-too-long, invalid-name, bare-except, eval-used, wildcard-import, unused-wildcard-import, too-many-branches, too-many-locals
+# pylint: disable = too-many-statements, old-style-class, no-init, too-few-public-methods, missing-docstring, too-many-arguments, global-statement
+# pylint: disable = relative-import
+
+import os
 import re
 import sys
 import cookielib
@@ -8,7 +12,7 @@ import xbmcplugin
 import xbmcgui
 import xbmcaddon
 import StorageServer
-from mlb_common import TeamCodes, addon_log, coloring, getRequest
+from mlb_common import TeamCodes, addon_log, getRequest
 from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup
 
 addon = xbmcaddon.Addon(id='plugin.video.mlbmc')
@@ -33,7 +37,7 @@ SOAPCODES = {
     "-3000": "Identity Error",
     "-3500": "Sign-on Restriction Error",
     "-4000": "System Error",
-    }
+}
 
 
 def mlb_login():
@@ -41,17 +45,17 @@ def mlb_login():
     # Get the cookie first
     url = 'https://secure.mlb.com/enterworkflow.do?flowId=registration.wizard&c_id=mlb'
     headers = {'User-agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0'}
-    login = getRequest(url,None,headers)
+    login = getRequest(url, None, headers)
 
     # now authenticate
     url = 'https://secure.mlb.com/authenticate.do'
     headers = {'User-agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0',
-               'Referer' : 'https://secure.mlb.com/enterworkflow.do?flowId=registration.wizard&c_id=mlb'}
+               'Referer' : 'https://secure.mlb.com/enterworkflow.do?flowId = registration.wizard&c_id = mlb'}
     values = {'uri' : '/account/login_register.jsp',
               'registrationAction' : 'identify',
               'emailAddress' : addon.getSetting('email'),
               'password' : addon.getSetting('password')}
-    login = getRequest(url,urllib.urlencode(values),headers)
+    login = getRequest(url, urllib.urlencode(values), headers)
     cookie_jar.load(cookie_file, ignore_discard=False, ignore_expires=False)
     cookies = {}
     addon_log('These are the cookies we have received from authenticate.do:')
@@ -61,15 +65,16 @@ def mlb_login():
 
     pattern = re.compile(r'Welcome to your personal (MLB|mlb).com account.')
     try:
-        loggedin = re.search(pattern, login).groups()
-        addon_log( "Logged in successfully!" )
+        re.search(pattern, login).groups()
+        addon_log("Logged in successfully!")
     except:
         addon_log("Login Failed!")
         try:
             soup = BeautifulSoup(login)
             addon_log(str(soup.head.title))
-        except: pass
-        xbmc.executebuiltin("XBMC.Notification("+language(30035)+","+language(30042)+",5000,"+icon+")")
+        except:
+            pass
+        xbmc.executebuiltin("XBMC.Notification("+language(30035)+", "+language(30042)+", 5000, "+icon+")")
 
     if cookies.has_key('ipid') and cookies.has_key('fprt'):
         return True
@@ -93,15 +98,15 @@ def mlbGame(event_id, full_count=False):
             login = mlb_login()
 
         if not login:
-            addon_log( "Seems to ba a cookie problem" )
-            xbmc.executebuiltin("XBMC.Notification("+language(30035)+","+language(30043)+",10000,"+icon+")")
+            addon_log("Seems to ba a cookie problem")
+            xbmc.executebuiltin("XBMC.Notification("+language(30035)+", "+language(30043)+", 10000, "+icon+")")
             return
 
         if login == 'old':
             # lets see if we get new cookies
             addon_log('old cookies: ipid - %s , fprt - %s' %(cookies['ipid'], cookies['fprt']))
             url = 'http://mlb.mlb.com/enterworkflow.do?flowId=media.media'
-            data = getRequest(url,None,None)
+            data = getRequest(url, None, None)
             addon_log('These are the cookies we have after enterworkflow.do?flowId=media.media:')
 
         cookie_jar.load(cookie_file, ignore_discard=True, ignore_expires=True)
@@ -113,7 +118,7 @@ def mlbGame(event_id, full_count=False):
         if cookies.has_key('ftmu'):
             addon_log("cookies.has_key('ftmu')")
             session = urllib.unquote(cookies['ftmu'])
-        
+
         values = {
             'eventId': event_id,
             'sessionKey': session,
@@ -121,17 +126,17 @@ def mlbGame(event_id, full_count=False):
             'identityPointId': cookies['ipid'],
             'subject':'LIVE_EVENT_COVERAGE',
             'platform':'WEB_MEDIAPLAYER'
-            }
+        }
     else:
         values = {
             'platform':'WEB_MEDIAPLAYER',
             'eventId':event_id,
             'subject':'MLB_FULLCOUNT'
-            }
+        }
     url = 'https://mlb-ws.mlb.com/pubajaxws/bamrest/MediaService2_0/op-findUserVerifiedEvent/v-2.3?'
     headers = {'User-agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0',
                'Referer' : 'http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MediaPlayer4.swf?'}
-    data = getRequest(url,urllib.urlencode(values),headers)
+    data = getRequest(url, urllib.urlencode(values), headers)
     if debug == "true":
         addon_log(data)
     soup = BeautifulStoneSoup(data)
@@ -147,7 +152,7 @@ def mlbGame(event_id, full_count=False):
                 cookie_jar.clear()
                 login = mlb_login()
             if not login:
-                xbmc.executebuiltin("XBMC.Notification("+language(30035)+","+language(30044)+error_str+",10000,"+icon+")")
+                xbmc.executebuiltin("XBMC.Notification("+language(30035)+", "+language(30044)+error_str+", 10000, "+icon+")")
                 return
             else:
                 cookie_jar.load(cookie_file, ignore_discard=True, ignore_expires=True)
@@ -167,8 +172,8 @@ def mlbGame(event_id, full_count=False):
                     'identityPointId': cookies['ipid'],
                     'subject':'LIVE_EVENT_COVERAGE',
                     'platform':'WEB_MEDIAPLAYER'
-                    }
-                data = getRequest(url,urllib.urlencode(values),headers)
+                }
+                data = getRequest(url, urllib.urlencode(values), headers)
         else:
             return
     cookie_jar.load(cookie_file, ignore_discard=True, ignore_expires=True)
@@ -202,13 +207,13 @@ def mlbGame(event_id, full_count=False):
         if full_count:
             name = 'full_count'
             session = ''
-            return getGameURL(name,event_id,content_id,session,None,None,scenario,True)
+            return getGameURL(name, event_id, content_id, session, None, None, scenario, True)
         else:
             # post season games have blackout status even when they arent
             if int(event_id.split('-')[-2]) >= 9:
                 blackout_status = item('blackout-status')[0]
                 try:
-                    blackout = item('blackout')[0].string.replace('_',' ')
+                    blackout = item('blackout')[0].string.replace('_', ' ')
                 except:
                     blackout = language(30031)
             else:
@@ -236,7 +241,7 @@ def mlbGame(event_id, full_count=False):
                 name += ' Gameday Audio'
                 scenario = 'AUDIO_FMS_32K'
 
-            name = name.replace('.','').rstrip(' ')
+            name = name.replace('.', '').rstrip(' ')
 
             if item.state.string == 'MEDIA_OFF':
                 addon_log('MEDIA_OFF: %s' %name)
@@ -244,9 +249,9 @@ def mlbGame(event_id, full_count=False):
 
             else:
                 if audio:
-                    verified_content['audio'].append((name,event_id,content_id,session,cookies['ipid'],cookies['fprt'],scenario,live))
+                    verified_content['audio'].append((name, event_id, content_id, session, cookies['ipid'], cookies['fprt'], scenario, live))
                 else:
-                    verified_content['video'].append((name,event_id,content_id,session,cookies['ipid'],cookies['fprt'],scenario,live))
+                    verified_content['video'].append((name, event_id, content_id, session, cookies['ipid'], cookies['fprt'], scenario, live))
 
     index = 0
     name_list = []
@@ -264,14 +269,14 @@ def mlbGame(event_id, full_count=False):
         getGameURL(*sorted_content[ret])
 
 
-def getGameURL(name,event,content,session,cookieIp,cookieFp,scenario,live):
+def getGameURL(name, event, content, session, cookieIp, cookieFp, scenario, live):
     if name == 'full_count':
         subject = 'MLB_FULLCOUNT'
         url = 'https://mlb-ws.mlb.com/pubajaxws/bamrest/MediaService2_0/op-findUserVerifiedEvent/v-2.3?'
     else:
         subject = 'LIVE_EVENT_COVERAGE'
         url = 'https://secure.mlb.com/pubajaxws/bamrest/MediaService2_0/op-findUserVerifiedEvent/v-2.3?'
-    
+
     try:
         cookieFp = urllib.unquote(cookieFp)
     except AttributeError:
@@ -285,9 +290,9 @@ def getGameURL(name,event,content,session,cookieIp,cookieFp,scenario,live):
         'eventId': event,
         'fingerprint': cookieFp,
         'platform':'WEB_MEDIAPLAYER'
-        }
+    }
 
-    data = getRequest(url,urllib.urlencode(values),None)
+    data = getRequest(url, urllib.urlencode(values), None)
     if debug == "true":
         addon_log(data)
     soup = BeautifulStoneSoup(data, convertEntities=BeautifulStoneSoup.XML_ENTITIES)
@@ -306,117 +311,117 @@ def getGameURL(name,event,content,session,cookieIp,cookieFp,scenario,live):
             cookieFp = new_fprt
     except AttributeError:
         addon_log('No New Fingerprint')
-        
+
     status = soup.find('status-code').string
     if status != "1":
         try:
             error_str = SOAPCODES[status]
-            xbmc.executebuiltin("XBMC.Notification("+language(30035)+","+language(30044)+error_str+",10000,"+icon+")")
+            xbmc.executebuiltin("XBMC.Notification("+language(30035)+", "+language(30044)+error_str+", 10000, "+icon+")")
         except:
-            addon_log ( 'Unknown status-code: '+status )
-            xbmc.executebuiltin("XBMC.Notification("+language(30035)+","+language(30046)+status+",10000,"+icon+")")
+            addon_log('Unknown status-code: '+status)
+            xbmc.executebuiltin("XBMC.Notification("+language(30035)+", "+language(30046)+status+", 10000, "+icon+")")
         return
 
     elif soup.find('state').string == 'MEDIA_OFF':
-        addon_log( 'Status : Media Off' )
+        addon_log('Status : Media Off')
         try:
             preview = soup.find('preview-url').contents[0]
-            if re.search('innings-index',str(preview)):
+            if re.search('innings-index', str(preview)):
                 if debug == "true":
-                    addon_log( 'No preview' )
+                    addon_log('No preview')
                 raise Exception
             else:
-                xbmc.executebuiltin("XBMC.Notification("+language(30035)+","+language(30045)+language(30047)+",10000,"+icon+")")
+                xbmc.executebuiltin("XBMC.Notification("+language(30035)+", "+language(30045)+language(30047)+", 10000, "+icon+")")
                 item = xbmcgui.ListItem(path=preview)
                 xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
         except:
-            xbmc.executebuiltin("XBMC.Notification("+language(30035)+","+language(30045)+",5000,"+icon+")")
+            xbmc.executebuiltin("XBMC.Notification("+language(30035)+", "+language(30045)+", 5000, "+icon+")")
             return
 
     elif not 'successstatus' in str(soup.find('blackout-status')):
         # post season games have blackout status even when they arent
         if int(event.split('-')[-2]) >= 9:
-            addon_log( 'Status : Blackout' )
+            addon_log('Status : Blackout')
             try:
-                blackout = item('blackout')[0].string.replace('_',' ')
+                blackout = item('blackout')[0].string.replace('_', ' ')
             except:
                 blackout = 'Blackout'
             try:
                 preview = soup.find('preview-url').contents[0]
-                if re.search('innings-index',str(preview)):
+                if re.search('innings-index', str(preview)):
                     if debug == "true":
-                        addon_log( 'No preview' )
+                        addon_log('No preview')
                     raise Exception
                 else:
-                    xbmc.executebuiltin("XBMC.Notification("+language(30035)+","+language(30044)+blackout+language(30047)+",15000,"+icon+")")
+                    xbmc.executebuiltin("XBMC.Notification("+language(30035)+", "+language(30044)+blackout+language(30047)+", 15000, "+icon+")")
                     item = xbmcgui.ListItem(path=preview)
                     xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
             except:
-                xbmc.executebuiltin("XBMC.Notification("+language(30035)+","+language(30044)+blackout+language(30047)+",5000,"+icon+")")
+                xbmc.executebuiltin("XBMC.Notification("+language(30035)+", "+language(30044)+blackout+language(30047)+", 5000, "+icon+")")
                 return
         else:
             addon_log('ignoring blackout: %s' %item('blackout-status')[0])
 
     elif 'notauthorizedstatus' in str(soup.find('auth-status')):
-        addon_log( 'Status : Not Authorized' )
+        addon_log('Status : Not Authorized')
         try:
             preview = soup.find('preview-url').contents[0]
-            if re.search('innings-index',str(preview)):
+            if re.search('innings-index', str(preview)):
                 if debug == "true":
-                    addon_log( 'No preview' )
+                    addon_log('No preview')
                 raise Exception
             else:
-                xbmc.executebuiltin("XBMC.Notification("+language(30035)+","+language(30048)+language(30047)+",15000,"+icon+")")
+                xbmc.executebuiltin("XBMC.Notification("+language(30035)+", "+language(30048)+language(30047)+", 15000, "+icon+")")
                 item = xbmcgui.ListItem(path=preview)
                 xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
         except:
-            xbmc.executebuiltin("XBMC.Notification("+language(30035)+","+language(30048)+",5000,"+icon+")")
+            xbmc.executebuiltin("XBMC.Notification("+language(30035)+", "+language(30048)+", 5000, "+icon+")")
             return
 
     else:
         try:
             game_url = soup.findAll('user-verified-content')[0]('user-verified-media-item')[0]('url')[0].string
             if debug == "true":
-                addon_log( 'game_url = '+game_url )
+                addon_log('game_url='+game_url)
         except:
-            addon_log( 'game_url not found' )
-            xbmc.executebuiltin("XBMC.Notification("+language(30035)+","+language(30049)+",5000,"+icon+")")
+            addon_log('game_url not found')
+            xbmc.executebuiltin("XBMC.Notification("+language(30035)+", "+language(30049)+", 5000, "+icon+")")
             return
 
         if game_url.startswith('rtmp'):
             if re.search('ondemand', game_url):
-                rtmp = game_url.split('ondemand/')[0]+'ondemand?_fcs_vhost=cp65670.edgefcs.net&akmfv=1.6&'+game_url.split('?')[1]
-                playpath = ' Playpath='+game_url.split('ondemand/')[1]
+                rtmp = game_url.split('ondemand/')[0]+'ondemand?_fcs_vhost=cp65670.edgefcs.net&akmfv = 1.6&'+game_url.split('?')[1]
+                playpath = ' Playpath = '+game_url.split('ondemand/')[1]
             if re.search('live/', game_url):
                 rtmp = game_url.split('mlb_')[0]
-                playpath = ' Playpath=mlb_'+game_url.split('mlb_')[1]
+                playpath = ' Playpath = mlb_'+game_url.split('mlb_')[1]
         else:
             smil = get_smil(game_url.split('?')[0])
             rtmp = smil[0]
-            playpath = ' Playpath='+smil[1]
+            playpath = ' Playpath = '+smil[1]
             if 'ondemand' in rtmp:
-                rtmp += ' app=ondemand?_fcs_vhost=cp65670.edgefcs.net&akmfv=1.6'+game_url.split('?')[1]
+                rtmp += ' app = ondemand?_fcs_vhost = cp65670.edgefcs.net&akmfv = 1.6'+game_url.split('?')[1]
 
         addon_log('Playpath: %s' %playpath)
         if name == 'full_count':
-            pageurl = (' pageUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MP4.jsp?calendar_event_id=%s'
+            pageurl = ('pageUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MP4.jsp?calendar_event_id=%s'
                        '&content_id=&media_id=&view_key=&media_type=&source=FULLCOUNT&sponsor=FULLCOUNT&clickOrigin=&affiliateId='
                        % soup.find('event-id').string)
         elif 'mp3:' in game_url:
-            pageurl = (' pageUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MP4.jsp?calendar_event_id='
+            pageurl = ('pageUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MP4.jsp?calendar_event_id='
                        '%s&content_id=%s&media_id=&view_key=&media_type=audio&source=MLB&sponsor=MLB&'
                        'clickOrigin=Media+Grid&affiliateId=Media+Grid&feed_code=h&team=mlb'
-                       %(soup.find('event-id').string, content))
+                       % (soup.find('event-id').string, content))
         else:
             pageurl = (' pageUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MP4.jsp?calendar_event_id=%s&content_id='
                        '&media_id=&view_key=&media_type=video&source=MLB&sponsor=MLB&clickOrigin=&affiliateId=&team=mlb'
                        % soup.find('event-id').string)
-        swfurl = ' swfUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MediaPlayer4.swf swfVfy=1'
+        swfurl = 'swfUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MediaPlayer4.swf swfVfy=1'
         if live:
             swfurl += ' live=1'
         final_url = rtmp+playpath+pageurl+swfurl
-        addon_log( 'Name: '+name )
-        addon_log( 'final url: '+final_url )
+        addon_log('Name: '+name)
+        addon_log('final url: '+final_url)
         item = xbmcgui.ListItem(path=final_url)
         xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
 
@@ -426,7 +431,7 @@ def get_smil(url):
     base = soup.meta['base']
     scenario = addon.getSetting('scenario')
     for i in soup('video'):
-        if i['system-bitrate'] == scenario.replace('K','000'):
+        if i['system-bitrate'] == scenario.replace('K', '000'):
             path = i['src']
             return (base, path)
         else: continue
