@@ -1,4 +1,8 @@
-﻿import urllib2
+﻿# pylint: disable = line-too-long, invalid-name, bare-except, eval-used, wildcard-import, unused-wildcard-import, too-many-branches, too-many-locals
+# pylint: disable = too-many-statements, old-style-class, no-init, too-few-public-methods, missing-docstring, too-many-arguments, global-statement
+# pylint: disable = relative-import
+
+import urllib2
 import urllib
 import xbmc
 import xbmcplugin
@@ -53,7 +57,7 @@ TeamCodes = {
     '140': ('Texas Rangers', 'tex'),
     '141': ('Toronto Blue Jays', 'tor'),
     '120': ('Washington Nationals', 'was')
-    }
+}
 
 
 def addon_log(string):
@@ -72,7 +76,7 @@ def getRequest(url, data=None, headers=None):
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookie_jar))
     urllib2.install_opener(opener)
     try:
-        req = urllib2.Request(url,data,headers)
+        req = urllib2.Request(url, data, headers)
         response = urllib2.urlopen(req)
         data = response.read()
         cookie_jar.save(cookie_file, ignore_discard=True, ignore_expires=False)
@@ -92,11 +96,11 @@ def getRequest(url, data=None, headers=None):
             addon_log('Reason: '+ reason)
         if hasattr(e, 'code'):
             reason = str(e.code)
-            addon_log( 'We failed with error code - %s.' % reason )
+            addon_log('We failed with error code - %s.' % reason)
             if 'highlights.xml' in url:
                 return
         if reason:
-            xbmc.executebuiltin("XBMC.Notification("+language(30015)+","+language(30019)+reason+",10000,"+icon+")")
+            xbmc.executebuiltin("XBMC.Notification("+language(30015)+", "+language(30019)+reason+", 10000, "+icon+")")
         return
 
 
@@ -112,87 +116,87 @@ def getLengthInMinutes(length):
     return minutes
 
 
-def addLink(name,url,duration,mode,iconimage,plot='',podcasts=False):
-    u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&podcasts="+str(podcasts)
+def addLink(name, url, duration, mode, iconimage, plot='', podcasts=False):
+    u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&podcasts="+str(podcasts)
     if addon_version.startswith('2'):
         if ':' in duration:
             duration = getLengthInMinutes(duration)
-    liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-    liz.setInfo( type="Video", infoLabels={ "Title": name, "duration": duration, "plot": plot } )
+    liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+    liz.setInfo(type="Video", infoLabels={"Title": name, "duration": duration, "plot": plot})
     liz.setProperty('IsPlayable', 'true')
-    liz.setProperty( "Fanart_Image", fanart2 )
-    ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
+    liz.setProperty("Fanart_Image", fanart2)
+    ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz)
     return ok
 
 
-def addDir(name,url,mode,iconimage,game_type=''):
-    u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+def addDir(name, url, mode, iconimage, game_type=''):
+    u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
     if game_type != '':
-        u+="&game_type="+urllib.quote_plus(game_type)
-    ok=True
-    liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-    liz.setInfo( type="Video", infoLabels={ "Title": name } )
-    liz.setProperty( "Fanart_Image", fanart )
-    ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+        u += "&game_type = "+urllib.quote_plus(game_type)
+    ok = True
+    liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+    liz.setInfo(type="Video", infoLabels={"Title": name})
+    liz.setProperty("Fanart_Image", fanart)
+    ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
     return ok
 
 
-def addGameDir(name,url,mode,iconimage):
-    u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-    ok=True
-    liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-    liz.setInfo( type="Video", infoLabels={ "Title": name } )
-    liz.setProperty( "Fanart_Image", fanart2 )
-    ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+def addGameDir(name, url, mode, iconimage):
+    u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+    ok = True
+    liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+    liz.setInfo(type="Video", infoLabels={"Title": name})
+    liz.setProperty("Fanart_Image", fanart2)
+    ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
     return ok
 
 
-def addPlaylist(name,url,mode,iconimage):
-    u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-    ok=True
-    liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-    liz.setInfo( type="Video", infoLabels={ "Title": name } )
-    liz.setProperty( "Fanart_Image", fanart )
-    ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)
+def addPlaylist(name, url, mode, iconimage):
+    u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+    ok = True
+    liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+    liz.setInfo(type="Video", infoLabels={"Title": name})
+    liz.setProperty("Fanart_Image", fanart)
+    ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz)
     return ok
 
 
-def coloring( text , color , colorword ):
+def coloring(text, color, colorword):
     if color == "white":
-        color="FFFFFFFF"
+        color = "FFFFFFFF"
     if color == "blue":
-        color="FF0000FF"
+        color = "FF0000FF"
     if color == "cyan":
-        color="FF00B7EB"
+        color = "FF00B7EB"
     if color == "violet":
-        color="FFEE82EE"
+        color = "FFEE82EE"
     if color == "pink":
-        color="FFFF1493"
+        color = "FFFF1493"
     if color == "red":
-        color="FFFF0000"
+        color = "FFFF0000"
     if color == "green":
-        color="FF00FF00"
+        color = "FF00FF00"
     if color == "lightgrey":
-        color="D3D3D3D3"
+        color = "D3D3D3D3"
     if color == "orange":
-        color="FFFF8C00"
-    colored_text = text.replace( colorword , "[COLOR=%s]%s[/COLOR]" % ( color , colorword ) )
+        color = "FFFF8C00"
+    colored_text = text.replace(colorword, "[COLOR=%s]%s[/COLOR]" % (color, colorword))
     return colored_text
 
 
 def get_params():
-    param=[]
-    paramstring=sys.argv[2]
-    if len(paramstring)>=2:
-        params=sys.argv[2]
-        cleanedparams=params.replace('?','')
-        if (params[len(params)-1]=='/'):
-            params=params[0:len(params)-2]
-        pairsofparams=cleanedparams.split('&')
-        param={}
+    param = []
+    paramstring = sys.argv[2]
+    if len(paramstring) >= 2:
+        params = sys.argv[2]
+        cleanedparams = params.replace('?', '')
+        if params[len(params)-1] == '/':
+            params = params[0:len(params)-2]
+        pairsofparams = cleanedparams.split('&')
+        param = {}
         for i in range(len(pairsofparams)):
-            splitparams={}
-            splitparams=pairsofparams[i].split('=')
-            if (len(splitparams))==2:
-                param[splitparams[0]]=splitparams[1]
+            splitparams = {}
+            splitparams = pairsofparams[i].split('=')
+            if (len(splitparams)) == 2:
+                param[splitparams[0]] = splitparams[1]
     return param
