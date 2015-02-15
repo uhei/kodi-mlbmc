@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.mlbmc"
        name="MLBMC"
-       version="2.0.72"
-       provider-name="divingmule">
+       version="2.0.73"
+       provider-name="divingmule_and_yuioup">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.beautifulsoup" version="3.2.0"/>
