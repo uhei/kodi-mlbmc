@@ -1,0 +1,3 @@
+[submodule "xbmc-addons"]
+	path = xbmc-addons
+	url = https://github.com/cjsimpson/xbmc-addons.git
