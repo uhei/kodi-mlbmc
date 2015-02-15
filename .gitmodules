@@ -1,3 +1,6 @@
 [submodule "xbmc-addons"]
 	path = xbmc-addons
 	url = https://github.com/cjsimpson/xbmc-addons.git
+[submodule "script.module.pydevd"]
+	path = script.module.pydevd
+	url = https://github.com/powlo/script.module.pydevd.git
