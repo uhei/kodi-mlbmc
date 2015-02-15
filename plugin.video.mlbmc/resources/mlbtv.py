@@ -12,7 +12,7 @@ import xbmcplugin
 import xbmcgui
 import xbmcaddon
 import StorageServer
-from mlb_common import TeamCodes, addon_log, getRequest
+from mlb_common import TeamCodes, addon_log, get_request
 from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup
 
 addon = xbmcaddon.Addon(id='plugin.video.mlbmc')
@@ -45,7 +45,7 @@ def mlb_login():
     # Get the cookie first
     url = 'https://secure.mlb.com/enterworkflow.do?flowId=registration.wizard&c_id=mlb'
     headers = {'User-agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0'}
-    login = getRequest(url, None, headers)
+    login = get_request(url, None, headers)
 
     # now authenticate
     url = 'https://secure.mlb.com/authenticate.do'
@@ -55,7 +55,7 @@ def mlb_login():
               'registrationAction' : 'identify',
               'emailAddress' : addon.getSetting('email'),
               'password' : addon.getSetting('password')}
-    login = getRequest(url, urllib.urlencode(values), headers)
+    login = get_request(url, urllib.urlencode(values), headers)
     cookie_jar.load(cookie_file, ignore_discard=False, ignore_expires=False)
     cookies = {}
     addon_log('These are the cookies we have received from authenticate.do:')
@@ -82,7 +82,7 @@ def mlb_login():
         return False
 
 
-def mlbGame(event_id, full_count=False):
+def get_mlb_game(event_id, full_count=False):
     if not full_count:
         # Check if cookies have expired.
         cookie_jar.load(cookie_file, ignore_discard=True, ignore_expires=False)
@@ -106,7 +106,7 @@ def mlbGame(event_id, full_count=False):
             # lets see if we get new cookies
             addon_log('old cookies: ipid - %s , fprt - %s' %(cookies['ipid'], cookies['fprt']))
             url = 'http://mlb.mlb.com/enterworkflow.do?flowId=media.media'
-            data = getRequest(url, None, None)
+            data = get_request(url, None, None)
             addon_log('These are the cookies we have after enterworkflow.do?flowId=media.media:')
 
         cookie_jar.load(cookie_file, ignore_discard=True, ignore_expires=True)
@@ -136,7 +136,7 @@ def mlbGame(event_id, full_count=False):
     url = 'https://mlb-ws.mlb.com/pubajaxws/bamrest/MediaService2_0/op-findUserVerifiedEvent/v-2.3?'
     headers = {'User-agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0',
                'Referer' : 'http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MediaPlayer4.swf?'}
-    data = getRequest(url, urllib.urlencode(values), headers)
+    data = get_request(url, urllib.urlencode(values), headers)
     if debug == "true":
         addon_log(data)
     soup = BeautifulStoneSoup(data)
@@ -173,7 +173,7 @@ def mlbGame(event_id, full_count=False):
                     'subject':'LIVE_EVENT_COVERAGE',
                     'platform':'WEB_MEDIAPLAYER'
                 }
-                data = getRequest(url, urllib.urlencode(values), headers)
+                data = get_request(url, urllib.urlencode(values), headers)
         else:
             return
     cookie_jar.load(cookie_file, ignore_discard=True, ignore_expires=True)
@@ -207,7 +207,7 @@ def mlbGame(event_id, full_count=False):
         if full_count:
             name = 'full_count'
             session = ''
-            return getGameURL(name, event_id, content_id, session, None, None, scenario, True)
+            return get_game_url(name, event_id, content_id, session, None, None, scenario, True)
         else:
             # post season games have blackout status even when they arent
             if int(event_id.split('-')[-2]) >= 9:
@@ -266,10 +266,10 @@ def mlbGame(event_id, full_count=False):
     if ret >= 0:
         addon_log('Selected: %s' %name_list[ret])
         addon_log('content: %s' %sorted_content[ret][0])
-        getGameURL(*sorted_content[ret])
+        get_game_url(*sorted_content[ret])
 
 
-def getGameURL(name, event, content, session, cookieIp, cookieFp, scenario, live):
+def get_game_url(name, event, content, session, cookieIp, cookieFp, scenario, live):
     if name == 'full_count':
         subject = 'MLB_FULLCOUNT'
         url = 'https://mlb-ws.mlb.com/pubajaxws/bamrest/MediaService2_0/op-findUserVerifiedEvent/v-2.3?'
@@ -292,7 +292,7 @@ def getGameURL(name, event, content, session, cookieIp, cookieFp, scenario, live
         'platform':'WEB_MEDIAPLAYER'
     }
 
-    data = getRequest(url, urllib.urlencode(values), None)
+    data = get_request(url, urllib.urlencode(values), None)
     if debug == "true":
         addon_log(data)
     soup = BeautifulStoneSoup(data, convertEntities=BeautifulStoneSoup.XML_ENTITIES)
@@ -427,7 +427,7 @@ def getGameURL(name, event, content, session, cookieIp, cookieFp, scenario, live
 
 
 def get_smil(url):
-    soup = BeautifulStoneSoup(getRequest(url))
+    soup = BeautifulStoneSoup(get_request(url))
     base = soup.meta['base']
     scenario = addon.getSetting('scenario')
     for i in soup('video'):

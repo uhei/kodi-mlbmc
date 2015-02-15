@@ -65,7 +65,7 @@ def addon_log(string):
         xbmc.log("[MLBMC-%s]: %s" %(addon_version, string))
 
 
-def getRequest(url, data=None, headers=None):
+def get_request(url, data=None, headers=None):
     if not xbmcvfs.exists(cookie_file):
         addon_log('Creating cookie_file!')
         cookie_jar.save()
@@ -104,7 +104,7 @@ def getRequest(url, data=None, headers=None):
         return
 
 
-def getLengthInMinutes(length):
+def get_length_in_minutes(length):
     l_split = length.split(':')
     minutes = int(l_split[-2])
     if int(l_split[-1]) >= 30:
@@ -116,11 +116,11 @@ def getLengthInMinutes(length):
     return minutes
 
 
-def addLink(name, url, duration, mode, iconimage, plot='', podcasts=False):
+def add_link(name, url, duration, mode, iconimage, plot='', podcasts=False):
     u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&podcasts="+str(podcasts)
     if addon_version.startswith('2'):
         if ':' in duration:
-            duration = getLengthInMinutes(duration)
+            duration = get_length_in_minutes(duration)
     liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
     liz.setInfo(type="Video", infoLabels={"Title": name, "duration": duration, "plot": plot})
     liz.setProperty('IsPlayable', 'true')
@@ -129,7 +129,7 @@ def addLink(name, url, duration, mode, iconimage, plot='', podcasts=False):
     return ok
 
 
-def addDir(name, url, mode, iconimage, game_type=''):
+def add_dir(name, url, mode, iconimage, game_type=''):
     u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
     if game_type != '':
         u += "&game_type="+urllib.quote_plus(game_type)
@@ -141,7 +141,7 @@ def addDir(name, url, mode, iconimage, game_type=''):
     return ok
 
 
-def addGameDir(name, url, mode, iconimage):
+def add_game_dir(name, url, mode, iconimage):
     u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
     ok = True
     liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
@@ -151,7 +151,7 @@ def addGameDir(name, url, mode, iconimage):
     return ok
 
 
-def addPlaylist(name, url, mode, iconimage):
+def add_playlist(name, url, mode, iconimage):
     u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
     ok = True
     liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
@@ -185,8 +185,6 @@ def coloring(text, color, colorword):
 
 
 def get_params():
-
-    addon_log("sys.argv:" % sys.argv)
 
     param = []
     paramstring = sys.argv[2]

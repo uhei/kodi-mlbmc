@@ -34,16 +34,16 @@ import urllib
 import time
 from datetime import datetime
 from resources import mlb, mlb_common, mlbtv
+import xbmcaddon
 
-REMOTE_DBG = True 
+addon = xbmcaddon.Addon(id='plugin.video.mlbmc')
+remote_debugging = addon.getSetting('debug_remote') == "true"
 
 # append pydev remote debugger
-if REMOTE_DBG:
-    # Make pydev debugger works for auto reload.
-    # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
+if remote_debugging:
     try:
-        import pysrc.pydevd as pydevd # with the addon script.module.pydevd, only use `import pydevd`
-    # stdoutToServer and stderrToServer redirect stdout and stderr to eclipse console
+        import pysrc.pydevd as pydevd 
+        # stdoutToServer and stderrToServer redirect stdout and stderr to eclipse console
         pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
     except ImportError:
         sys.stderr.write("Error: " +
@@ -118,66 +118,66 @@ mlb_common.addon_log("Mode: "+str(mode))
 mlb_common.addon_log("URL: "+str(url))
 mlb_common.addon_log("Name: "+str(name))
 
-if mode == None:
-    mlb.categories()
+if mode is None:
+    mlb.get_categories()
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 1:
-    mlb.getVideos(url)
+    mlb.get_videos(url)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 2:
     if podcasts:
-        mlb.setVideoURL(url, True)
+        mlb.set_video_url(url, True)
     else:
-        mlb.setVideoURL(url)
+        mlb.set_video_url(url)
 
 if mode == 3:
-    mlb.gameCalender('mlbtv')
+    mlb.get_game_calendar('mlbtv')
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 4:
-    mlb.getTeams(url)
+    mlb.get_teams(url)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 5:
-    mlb.getTeamVideo(url)
+    mlb.get_team_video(url)
 
 if mode == 6:
-    mlb.getGames(url)
+    mlb.get_games(url)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 7:
-    mlbtv.mlbGame(event)
+    mlbtv.get_mlb_game(event)
 
 if mode == 8:
-    mlb.getRealtimeVideo(url)
+    mlb.get_realtime_video(url)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 9:
-    mlbtv.getGameURL(name, event, content, session, cookieIp, cookieFp, scenario, live)
+    mlbtv.get_game_url(name, event, content, session, cookieIp, cookieFp, scenario, live)
 
 if mode == 10:
     mlb.get_podcasts(url)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 11:
-    url = mlb.getDate(game_type)
+    url = mlb.get_date(game_type)
     if game_type == 'mlbtv':
-        mlb.getGames(url)
+        mlb.get_games(url)
     else:
-        mlb.getCondensedGames(url)
+        mlb.get_condensed_games(url)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 12:
-    mlb.playLatest()
+    mlb.play_latest()
 
 if mode == 13:
-    mlb.gameCalender('condensed')
+    mlb.get_game_calendar('condensed')
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 14:
-    mlb.getCondensedGames(url)
+    mlb.get_condensed_games(url)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 15:
@@ -185,15 +185,15 @@ if mode == 15:
         start_date = datetime.strptime(url, "%B %d, %Y - %A")
     except TypeError:
         start_date = datetime.fromtimestamp(time.mktime(time.strptime(url, "%B %d, %Y - %A")))
-    mlb.gameCalender(game_type, start_date)
+    mlb.get_game_calendar(game_type, start_date)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 16:
-    mlb.Search(url)
+    mlb.do_search(url)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 17:
-    mlb.gameHighlights()
+    mlb.get_game_highlights()
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 18:
@@ -209,7 +209,7 @@ if mode == 20:
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 21:
-    mlb.getVideos('current_playlist', int(url))
+    mlb.get_videos('current_playlist', int(url))
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 22:
@@ -217,7 +217,7 @@ if mode == 22:
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 23:
-    mlb.getFullCount()
+    mlb.get_full_count()
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 24:
@@ -225,15 +225,15 @@ if mode == 24:
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 25:
-    mlbtv.mlbGame(event, True)
+    mlbtv.get_mlb_game(event, True)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 26:
-    mlb.getGameHighlights(url)
+    mlb.get_game_highlights_of_date(url)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 27:
-    mlb.getRealtimeVideo(url)
+    mlb.get_realtime_video(url)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 if mode == 28:

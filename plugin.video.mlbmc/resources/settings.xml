@@ -2,6 +2,7 @@
   <category label="General">
     <setting id="show_scores" type="bool" label="30061" default="false"/>
     <setting id="debug" type="bool" label="30059" default="false"/>
+    <setting id="debug_remote" type="bool" label="30062" default="false"/>
     <setting id="use_hls" type="bool" label="30060" default="true"/>
   </category>
   <category label="30000">
