@@ -132,7 +132,7 @@ def addLink(name, url, duration, mode, iconimage, plot='', podcasts=False):
 def addDir(name, url, mode, iconimage, game_type=''):
     u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
     if game_type != '':
-        u += "&game_type = "+urllib.quote_plus(game_type)
+        u += "&game_type="+urllib.quote_plus(game_type)
     ok = True
     liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
     liz.setInfo(type="Video", infoLabels={"Title": name})
@@ -185,6 +185,9 @@ def coloring(text, color, colorword):
 
 
 def get_params():
+
+    addon_log("sys.argv:" % sys.argv)
+
     param = []
     paramstring = sys.argv[2]
     if len(paramstring) >= 2:

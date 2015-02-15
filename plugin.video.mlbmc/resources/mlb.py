@@ -1,6 +1,6 @@
 ﻿# pylint: disable = line-too-long, invalid-name, bare-except, eval-used, wildcard-import, unused-wildcard-import, too-many-branches, too-many-locals
 # pylint: disable = too-many-statements, old-style-class, no-init, too-few-public-methods, missing-docstring, too-many-arguments, global-statement
-# pylint: disable = relative-import
+# pylint: disable = relative-import, import-error
 
 import urllib
 import sys
