@@ -35,6 +35,21 @@ import time
 from datetime import datetime
 from resources import mlb, mlb_common, mlbtv
 
+REMOTE_DBG = True 
+
+# append pydev remote debugger
+if REMOTE_DBG:
+    # Make pydev debugger works for auto reload.
+    # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
+    try:
+        import pysrc.pydevd as pydevd # with the addon script.module.pydevd, only use `import pydevd`
+    # stdoutToServer and stderrToServer redirect stdout and stderr to eclipse console
+        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
+    except ImportError:
+        sys.stderr.write("Error: " +
+            "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
+        sys.exit(1)
+
 url = None
 name = None
 mode = None
