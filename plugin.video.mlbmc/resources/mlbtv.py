@@ -209,6 +209,9 @@ def get_mlb_game(event_id, full_count=False):
             session = ''
             return get_game_url(name, event_id, content_id, session, None, None, scenario, True)
         else:
+            blackout_status = ""
+            blackout = ""
+
             # post season games have blackout status even when they arent
             if int(event_id.split('-')[-2]) >= 9:
                 blackout_status = item('blackout-status')[0]
@@ -390,17 +393,17 @@ def get_game_url(name, event, content, session, cookieIp, cookieFp, scenario, li
 
         if game_url.startswith('rtmp'):
             if re.search('ondemand', game_url):
-                rtmp = game_url.split('ondemand/')[0]+'ondemand?_fcs_vhost=cp65670.edgefcs.net&akmfv = 1.6&'+game_url.split('?')[1]
-                playpath = ' Playpath = '+game_url.split('ondemand/')[1]
+                rtmp = game_url.split('ondemand/')[0]+'ondemand?_fcs_vhost=cp65670.edgefcs.net&akmfv=1.6&'+game_url.split('?')[1]
+                playpath = 'Playpath='+game_url.split('ondemand/')[1]
             if re.search('live/', game_url):
                 rtmp = game_url.split('mlb_')[0]
-                playpath = ' Playpath = mlb_'+game_url.split('mlb_')[1]
+                playpath = 'Playpath=mlb_'+game_url.split('mlb_')[1]
         else:
             smil = get_smil(game_url.split('?')[0])
             rtmp = smil[0]
-            playpath = ' Playpath = '+smil[1]
+            playpath = 'Playpath='+smil[1]
             if 'ondemand' in rtmp:
-                rtmp += ' app = ondemand?_fcs_vhost = cp65670.edgefcs.net&akmfv = 1.6'+game_url.split('?')[1]
+                rtmp += 'app=ondemand?_fcs_vhost=cp65670.edgefcs.net&akmfv=1.6'+game_url.split('?')[1]
 
         addon_log('Playpath: %s' %playpath)
         if name == 'full_count':
