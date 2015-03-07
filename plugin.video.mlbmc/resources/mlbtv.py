@@ -394,24 +394,24 @@ def get_game_url(name, event, content, session, cookieIp, cookieFp, scenario, li
         if game_url.startswith('rtmp'):
             if re.search('ondemand', game_url):
                 rtmp = game_url.split('ondemand/')[0]+'ondemand?_fcs_vhost=cp65670.edgefcs.net&akmfv=1.6&'+game_url.split('?')[1]
-                playpath = 'Playpath='+game_url.split('ondemand/')[1]
+                playpath = ' Playpath='+game_url.split('ondemand/')[1]
             if re.search('live/', game_url):
                 rtmp = game_url.split('mlb_')[0]
-                playpath = 'Playpath=mlb_'+game_url.split('mlb_')[1]
+                playpath = ' Playpath=mlb_'+game_url.split('mlb_')[1]
         else:
             smil = get_smil(game_url.split('?')[0])
             rtmp = smil[0]
-            playpath = 'Playpath='+smil[1]
+            playpath = ' Playpath='+smil[1]
             if 'ondemand' in rtmp:
-                rtmp += 'app=ondemand?_fcs_vhost=cp65670.edgefcs.net&akmfv=1.6'+game_url.split('?')[1]
+                rtmp += ' app=ondemand?_fcs_vhost=cp65670.edgefcs.net&akmfv=1.6'+game_url.split('?')[1]
 
-        addon_log('Playpath: %s' %playpath)
+        addon_log('Playpath: %s' % playpath)
         if name == 'full_count':
-            pageurl = ('pageUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MP4.jsp?calendar_event_id=%s'
+            pageurl = (' pageUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MP4.jsp?calendar_event_id=%s'
                        '&content_id=&media_id=&view_key=&media_type=&source=FULLCOUNT&sponsor=FULLCOUNT&clickOrigin=&affiliateId='
                        % soup.find('event-id').string)
         elif 'mp3:' in game_url:
-            pageurl = ('pageUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MP4.jsp?calendar_event_id='
+            pageurl = (' pageUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MP4.jsp?calendar_event_id='
                        '%s&content_id=%s&media_id=&view_key=&media_type=audio&source=MLB&sponsor=MLB&'
                        'clickOrigin=Media+Grid&affiliateId=Media+Grid&feed_code=h&team=mlb'
                        % (soup.find('event-id').string, content))
@@ -419,7 +419,7 @@ def get_game_url(name, event, content, session, cookieIp, cookieFp, scenario, li
             pageurl = (' pageUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MP4.jsp?calendar_event_id=%s&content_id='
                        '&media_id=&view_key=&media_type=video&source=MLB&sponsor=MLB&clickOrigin=&affiliateId=&team=mlb'
                        % soup.find('event-id').string)
-        swfurl = 'swfUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MediaPlayer4.swf swfVfy=1'
+        swfurl = ' swfUrl=http://mlb.mlb.com/shared/flash/mediaplayer/v4.4/R8/MediaPlayer4.swf swfVfy=1'
         if live:
             swfurl += ' live=1'
         final_url = rtmp+playpath+pageurl+swfurl
