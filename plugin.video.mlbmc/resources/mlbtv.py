@@ -401,7 +401,7 @@ def get_game_url(name, event, content, session, cookieIp, cookieFp, scenario, li
         else:
             smil = get_smil(game_url.split('?')[0])
             rtmp = smil[0]
-            playpath = ' Playpath='+smil[1]
+            playpath = ' Playpath='+smil[1]+'?'+game_url.split('?')[1]
             if 'ondemand' in rtmp:
                 rtmp += ' app=ondemand?_fcs_vhost=cp65670.edgefcs.net&akmfv=1.6'+game_url.split('?')[1]
 
