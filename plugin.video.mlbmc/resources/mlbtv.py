@@ -81,6 +81,24 @@ def mlb_login():
     else:
         return False
 
+def mlb_logout():
+    """Logs out from the mlb.com session. Meant to prevent
+    multiple login errors."""
+    addon_log('Logging out')
+    url = "https://secure.mlb.com/enterworkflow.do?flowId=registration.logout&c_id=mlb"
+    headers = {'User-agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0',
+                 'Referer' : 'http://mlb.mlb.com/index.jsp'}
+    values = {}
+    logout = get_request(url,urllib.urlencode(values),headers)
+    pattern = re.compile(r'You are now logged out.')
+    if not re.search(pattern,logout):
+       xbmc.executebuiltin("XBMC.Notification("+language(30035)+", "+language(30050)+", 5000, "+icon+")")
+       addon_log(logout)
+
+    # clear session cookies since they're no longer valid
+    cookie_jar.clear()
+    # END logout
+
 
 def get_mlb_game(event_id, full_count=False):
     if not full_count:

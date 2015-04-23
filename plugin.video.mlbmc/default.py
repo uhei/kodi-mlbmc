@@ -244,5 +244,8 @@ if mode == 29:
     mlb.get_playlist_cats(True, url)
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
+if mode == 31:
+    mlbtv.mlb_logout()
+
 if mode == 30:
     pass
