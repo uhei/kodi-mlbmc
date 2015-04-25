@@ -22,10 +22,11 @@
 # *
 # *  mlbviewer  http://sourceforge.net/projects/mlbviewer/  Most of the mlb.tv code was from this project.
 # *
-# *  Everyone from the fourm - http://fourm.xbmc.org
+# *  Everyone from the forum - http://forum.xbmc.org
 # *    giftie - for the colored text code :) thanks.
-# *    theophile and the others from - http://forum.xbmc.org/showthread.php?t = 97251
-# *    bunglebungle for game highlights patch - http://forum.xbmc.org/showthread.php?tid = 104391&pid = 1109006#pid1109006
+# *    theophile and the others from - http://forum.xbmc.org/showthread.php?t=97251
+# *    bunglebungle for game highlights patch - http://forum.xbmc.org/showthread.php?tid=104391&pid=1109006#pid1109006
+# *    bunglebungle for logout patch - http://forum.kodi.tv/showthread.php?tid=104391&pid=1988662#pid1988662
 
 
 import xbmcplugin
