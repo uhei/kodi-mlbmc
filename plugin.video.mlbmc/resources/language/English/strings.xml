@@ -15,7 +15,7 @@
   <string id="30011">Browse all Categories</string>
   <string id="30012">Current Player Roster</string>
   <string id="30013">Latest Highlights</string>
-  <string id="30014"></string>
+  <string id="30014">Logout</string>
   <!-- game calander -->
   <string id="30015">Older Dates</string>
   <string id="30016">Future Dates</string>
@@ -55,7 +55,7 @@
   <string id='30047'> - Playing Preview</string>
   <string id='30048'>Not Authorized</string>
   <string id='30049'>The playback url was not returned.</string>
-  <string id='30050'></string>
+  <string id='30050'>Log out Failed</string>
   <string id='30051'></string>
   <string id='30052'></string>
   <string id='30053'></string>

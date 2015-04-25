@@ -46,6 +46,7 @@ def get_categories():
     add_dir(language(30007), '', 22, thumb_path+'podcast.png')
     add_dir(language(30008), 'http://gdx.mlb.com/components/game/mlb/'+dateStr.day[0]+'/media/highlights.xml', 8, thumb_path+'realtime.png')
     add_dir(language(30009), '', 16, thumb_path+'search.png')
+    add_dir(language(30014), '', 31, thumb_path+'mlb.tv.png')
 
 
 def get_playlist_page(url):
