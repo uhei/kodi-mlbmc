@@ -27,6 +27,7 @@
 # *    theophile and the others from - http://forum.xbmc.org/showthread.php?t=97251
 # *    bunglebungle for game highlights patch - http://forum.xbmc.org/showthread.php?tid=104391&pid=1109006#pid1109006
 # *    bunglebungle for logout patch - http://forum.kodi.tv/showthread.php?tid=104391&pid=1988662#pid1988662
+# *    uhei for National and American League in Team List - https://github.com/Yuioup/kodi-mlbmc/pull/9
 
 
 import xbmcplugin
