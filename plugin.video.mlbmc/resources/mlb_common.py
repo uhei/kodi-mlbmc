@@ -56,6 +56,8 @@ TeamCodes = {
     '139': ('Tampa Bay Rays', 'tb'),
     '140': ('Texas Rangers', 'tex'),
     '141': ('Toronto Blue Jays', 'tor'),
+    '159': ('American', 'aas'),
+    '160': ('National', 'nas'),
     '120': ('Washington Nationals', 'was')
 }
 

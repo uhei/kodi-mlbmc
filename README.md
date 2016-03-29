@@ -1,6 +1,6 @@
 # kodi-mlbmc
 
-**Warning:** This plugin may still have some bugs. 
+**Warning:** This plugin may have bugs. 
 
 My attempt to maintain divingmule's mlbmc plugin.
 
