@@ -456,4 +456,13 @@ def get_smil(url):
             path = i['src']
             return (base, path)
         else: continue
+    # it seems we did't find the preferred bit-rate therefore we choose a higher one   
+    addon_log('Didn\'t find the URL. Choose an alternative bitrate')                                     
+    for i in soup('video'):                                                         
+        if int(i['system-bitrate']) > int(scenario.replace('K', '000')):            
+            addon_log('Alternative bitrate='+i['system-bitrate'])                   
+            path = i['src']                                                         
+            return (base, path)                                                                          
+        else: continue                                                                                       
+    addon_log('Something wrong in choosing the right URL')    
 
