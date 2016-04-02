@@ -58,7 +58,10 @@ TeamCodes = {
     '141': ('Toronto Blue Jays', 'tor'),
     '159': ('American', 'aas'),
     '160': ('National', 'nas'),
-    '120': ('Washington Nationals', 'was')
+    '120': ('Washington Nationals', 'was'),
+    '382': ('Phillies Futures', 'pfs'),
+    '4904': ('Chihuahuas', 'elp'),
+    '105': ('River Cats', 'src')
 }
 
 
