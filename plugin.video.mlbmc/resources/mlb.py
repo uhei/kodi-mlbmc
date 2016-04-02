@@ -401,20 +401,24 @@ def get_condensed_games(url):
     addon_log('item count: %s' %len(items))
     for i in items:
         content_id = None
-        media_items = i['game_media']['homebase']['media']
-        for t in media_items:
-            if t['type'] == "condensed_game":
-                content_id = t['id']
-                break
-        if content_id:
-            url = ('http://mlb.mlb.com/gen/multimedia/detail/%s/%s/%s/%s.xml'
-                   %(content_id[-3], content_id[-2], content_id[-1], content_id))
+        if 'game_media' in i and 'homebase' in i['game_media'] and 'media' in i['game_media']['homebase']:
+            media_items = i['game_media']['homebase']['media']
+            for t in media_items:
+                if t['type'] == "condensed_game":
+                    content_id = t['id']
+                    break
+            if content_id:
+                url = ('http://mlb.mlb.com/gen/multimedia/detail/%s/%s/%s/%s.xml'
+                       %(content_id[-3], content_id[-2], content_id[-1], content_id))
+            else:
+                url = None
 
-        if show_scores == "true":
-            name = TeamCodes[i['away_team_id']][0] + ' - ' + i['away_score'] + ' @ ' + TeamCodes[i['home_team_id']][0] + ' - ' + i['home_score']
-        else:
-            name = TeamCodes[i['away_team_id']][0] + ' @ ' + TeamCodes[i['home_team_id']][0]
-        add_link(name, url, '', 2, 'http://mlbmc-xbmc.googlecode.com/svn/icons/condensed.png')
+            if show_scores == "true":
+                name = TeamCodes[i['away_team_id']][0] + ' - ' + i['away_score'] + ' @ ' + TeamCodes[i['home_team_id']][0] + ' - ' + i['home_score']
+            else:
+                name = TeamCodes[i['away_team_id']][0] + ' @ ' + TeamCodes[i['home_team_id']][0]
+            if url:
+                add_link(name, url, '', 2, 'http://mlbmc-xbmc.googlecode.com/svn/icons/condensed.png')
 
 
 def get_game_highlights():
