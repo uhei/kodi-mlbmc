@@ -19,7 +19,7 @@
         <platform>all</platform>
         <language>en</language>
         <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
-        <source>https://github.com/kevinhamon/kodi-mlbmc</source>
+        <source>https://github.com/uhei/kodi-mlbmc</source>
         <forum>http://forum.xbmc.org/showthread.php?tid=104391</forum>
     </extension>
 </addon>
